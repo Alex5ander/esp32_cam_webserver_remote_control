@@ -4,6 +4,8 @@
 #include "esp_http_server.h"
 #include "esp_timer.h"
 
+int dir = 0;
+
 void back() {
   digitalWrite(12, 1);
   digitalWrite(13, 0);
@@ -126,23 +128,15 @@ static esp_err_t cmd_handler(httpd_req_t *req){
   Serial.println( variable );
   
   if( strcmp("front", variable) == 0) {
-   front();
-   delay(100);
-   stop1();
+    dir = 1;
   }else if( strcmp("back", variable) == 0 ){
-   back(); 
-   delay(100);
-   stop1();
+    dir = 2;
   }else if( strcmp("right", variable) == 0 ){
-   right();
-   delay(100);
-   stop1(); 
+    dir = 3; 
   }else if( strcmp("left", variable) == 0 ){
-   left(); 
-   delay(100);
-   stop1();
+    dir = 4;
   }else if( strcmp("stop", variable) == 0 ){
-   stop1(); 
+    dir = 5;
   }else if( strcmp("flashon", variable) == 0 ){
    digitalWrite(4, 1); 
   }else if( strcmp("flashoff", variable) == 0 ){
@@ -168,8 +162,9 @@ static esp_err_t cmd_handler(httpd_req_t *req){
     httpd_resp_set_type(req, "text/html");
     httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
     httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);  
+    return ESP_OK;
   }
-  
+  httpd_resp_send(req, "ok", HTTPD_RESP_USE_STRLEN);
   return ESP_OK;
 }
 
@@ -293,4 +288,29 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  if(dir == 1) {
+    front();
+  }
+
+  if(dir == 2) {
+    back();
+  }
+
+  if(dir == 3) {
+    right();
+  }
+
+  if(dir == 4) {
+    left();
+  }
+
+  if(dir == 5) {
+    stop1();
+  }
+  
+  if(dir != 0){
+    delay(100);
+    dir = 0;
+    stop1();
+  }
 }
