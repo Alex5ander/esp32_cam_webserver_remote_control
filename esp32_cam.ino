@@ -270,12 +270,18 @@ void setup() {
     return;
   }
 
+  /**
   WiFi.begin(ssid, password);
   while(WiFi.status() != WL_CONNECTED) {
     Serial.println(".");
   }
    
   Serial.println(WiFi.localIP());
+  **/
+
+  const char* n = "esp32-cam";
+  const char* p = "12345678";
+  WiFi.softAP(n, p);
   startServer();
   pinMode(4, OUTPUT);
   
